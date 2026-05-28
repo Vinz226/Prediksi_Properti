@@ -14,6 +14,11 @@ import warnings
 warnings.filterwarnings('ignore')
 
 app = Flask(__name__)
+# Konfigurasi cookie agar bisa diakses dari mobile
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['SESSION_COOKIE_SECURE'] = False  # Set True nanti kalau pakai HTTPS
+app.config['REMEMBER_COOKIE_SAMESITE'] = 'Lax'
+app.config['SESSION_COOKIE_HTTPONLY'] = True
 import json
 def fromjson_filter(value):
     return json.loads(value)
