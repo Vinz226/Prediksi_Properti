@@ -1,6 +1,3 @@
-import matplotlib
-matplotlib.use('Agg')  
-import matplotlib.pyplot as plt
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash, abort
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy         
