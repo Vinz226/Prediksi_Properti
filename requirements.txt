@@ -11,3 +11,4 @@ joblib
 gunicorn
 setuptools
 wheel
+Werkzeug<3.0
