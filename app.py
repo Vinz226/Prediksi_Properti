@@ -704,6 +704,7 @@ if __name__ == '__main__':
     print("   Email: admin@example.com")
     print("   Password: admin123")
     print("="*60)
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    port = int(os.environ.get('PORT', 5000))  # ← TAMBAHKAN INI
+    app.run(debug=False, host='0.0.0.0', port=port)  # ← UBAH debug=False dan pakai port variable
 else:
     pass
