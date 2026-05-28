@@ -182,7 +182,7 @@ for path in data_paths:
 if df_properti is None:
     print("⚠️ Data properti tidak ditemukan!")
     df_properti = pd.DataFrame()
-print(f"📊 Total data properti: {len(df_properti)} baris")
+print(f"📊 Total data properti: {len(df_properti)} bariis")
 
 print("\n" + "="*60)
 print("🚀 LOADING MODELS (HANYA 1 MODEL TERBAIK)...")
