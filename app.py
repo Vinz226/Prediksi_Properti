@@ -185,7 +185,7 @@ if df_properti is None:
 print(f"📊 Total data properti: {len(df_properti)} baris")
 
 print("\n" + "="*60)
-print("🚀 LOADING 4 MODELS...")
+print("🚀 LOADING MODELS (HANYA 1 MODEL TERBAIK)...")
 print("="*60)
 encoder_path = 'models/encoder_kecamatan.pkl'
 if os.path.exists(encoder_path):
@@ -196,17 +196,28 @@ else:
     print(f"❌ Encoder not found at {encoder_path}")
     encoder = None
 
-all_models = []
+# Inisialisasi all_models dengan None untuk 4 slot
+all_models = [None, None, None, None]
 model_names = ['Fisik Saja', '+ Makro', '+ Lokasi', '+ Semua']
-for i in range(4):
-    model_path = f'models/model_{i}.pkl'
-    if os.path.exists(model_path):
-        with open(model_path, 'rb') as f:
-            all_models.append(pickle.load(f))
-        print(f"✅ Model {i} loaded: {model_names[i]} from {model_path}")
-    else:
-        print(f"❌ Model {i} not found at {model_path}")
-        all_models.append(None)
+
+# Hanya load model ke-3 (model_3.pkl) yaitu model "+ Semua"
+model_path = 'models/model_3.pkl'
+if os.path.exists(model_path):
+    with open(model_path, 'rb') as f:
+        all_models[3] = pickle.load(f)
+    print(f"✅ Model 3 (terbaik) loaded: {model_names[3]} from {model_path}")
+else:
+    print(f"❌ Model 3 not found at {model_path}")
+
+# Coba load model lain hanya jika model_3 tidak ada (fallback)
+if all_models[3] is None:
+    for i in range(3):
+        model_path = f'models/model_{i}.pkl'
+        if os.path.exists(model_path):
+            with open(model_path, 'rb') as f:
+                all_models[i] = pickle.load(f)
+            print(f"✅ Fallback: Model {i} loaded from {model_path}")
+            break
 
 model_path = 'models/model_terbaik.pkl'
 if os.path.exists(model_path):
