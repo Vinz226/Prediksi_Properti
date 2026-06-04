@@ -190,8 +190,24 @@ if df_properti is None:
 print(f"📊 Total data properti: {len(df_properti)} bariis")
 
 print("\n" + "="*60)
-print("🚀 LOADING MODELS (HANYA 1 MODEL TERBAIK)...")
+print("🚀 LOADING 4 MODELS...")
 print("="*60)
+
+# Inisialisasi
+all_models = [None, None, None, None]
+model_names = ['Fisik Saja', '+ Makro', '+ Lokasi', '+ Semua']
+
+# Load keempat model
+for i in range(4):
+    model_path = f'models/model_{i}.pkl'
+    if os.path.exists(model_path):
+        with open(model_path, 'rb') as f:
+            all_models[i] = pickle.load(f)
+        print(f"✅ Model {i} loaded: {model_names[i]} from {model_path}")
+    else:
+        print(f"❌ Model {i} not found at {model_path}")
+
+# Load encoder
 encoder_path = 'models/encoder_kecamatan.pkl'
 if os.path.exists(encoder_path):
     with open(encoder_path, 'rb') as f:
@@ -201,59 +217,37 @@ else:
     print(f"❌ Encoder not found at {encoder_path}")
     encoder = None
 
-# Inisialisasi all_models dengan None untuk 4 slot
-all_models = [None, None, None, None]
-model_names = ['Fisik Saja', '+ Makro', '+ Lokasi', '+ Semua']
-
-# Hanya load model ke-3 (model_3.pkl) yaitu model "+ Semua"
-model_path = 'models/model_3.pkl'
-if os.path.exists(model_path):
-    with open(model_path, 'rb') as f:
-        all_models[3] = pickle.load(f)
-    print(f"✅ Model 3 (terbaik) loaded: {model_names[3]} from {model_path}")
-else:
-    print(f"❌ Model 3 not found at {model_path}")
-
-# Coba load model lain hanya jika model_3 tidak ada (fallback)
-if all_models[3] is None:
-    for i in range(3):
-        model_path = f'models/model_{i}.pkl'
-        if os.path.exists(model_path):
-            with open(model_path, 'rb') as f:
-                all_models[i] = pickle.load(f)
-            print(f"✅ Fallback: Model {i} loaded from {model_path}")
-            break
-
-model_path = 'models/model_terbaik.pkl'
-if os.path.exists(model_path):
-    with open(model_path, 'rb') as f:
-        model = pickle.load(f)
-    print(f"✅ Best model loaded from {model_path}")
-else:
-    model = all_models[3] if len(all_models) > 3 and all_models[3] else (all_models[0] if len(all_models) > 0 and all_models[0] else None)
-
+# Load metrics
 results_path = 'models/results_optimasi.pkl'
 if os.path.exists(results_path):
     with open(results_path, 'rb') as f:
         all_metrics = pickle.load(f)
     print(f"✅ Metrics loaded from {results_path}")
-    print(f"📊 Total models in metrics: {len(all_metrics)}")
     for i, m in enumerate(all_metrics):
         print(f"   Model {i}: {m.get('name', 'Unknown')} - R²={m.get('r2', 0):.4f}")
 else:
     print(f"❌ Metrics not found at {results_path}")
     all_metrics = []
 
+# Load best model (fallback)
+model_path = 'models/model_terbaik.pkl'
+if os.path.exists(model_path):
+    with open(model_path, 'rb') as f:
+        model = pickle.load(f)
+    print(f"✅ Best model loaded from {model_path}")
+else:
+    model = all_models[3] if all_models[3] else (all_models[0] if all_models[0] else None)
+
+# Extract features dari setiap model
 feature_columns_list = []
 for i, mdl in enumerate(all_models):
     if mdl is not None:
         try:
             features = list(mdl.feature_names_in_)
             feature_columns_list.append(features)
-            print(f"✅ Features model {i} extracted: {len(features)} features")
-        except Exception as e:
+            print(f"✅ Features model {i}: {len(features)} features")
+        except:
             feature_columns_list.append(None)
-            print(f"⚠️ Could not extract features from model {i}: {e}")
     else:
         feature_columns_list.append(None)
 print("="*60)
